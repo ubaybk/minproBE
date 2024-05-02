@@ -1,0 +1,150 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int               @id @default(autoincrement())
+  username      String            @unique
+  email         String            @unique
+  password      String
+  roleId        Int
+  role          Role              @relation(fields: [roleId], references: [id])
+  point         Int
+  isVerified    Boolean
+  referralCode  String            @unique
+  claimedCode   String               
+  createAt      DateTime          @default(now())
+  updateAt      DateTime          @updatedAt
+  Voucher       Voucher[]
+  giver         ReferralHistory[] @relation("giver")
+  receiver      ReferralHistory[] @relation("receiver")
+  Review        Review[]
+  Event         Event[]
+  Attendee      Attendee[]
+}
+
+model Role {
+  id   Int    @id @default(autoincrement())
+  name String
+  User User[]
+}
+
+model ReferralHistory {
+  id            Int      @id @default(autoincrement())
+  giver_id      Int
+  user_giver    User     @relation("giver", fields: [giver_id], references: [id])
+  receiver_id   Int
+  user_receiver User     @relation("receiver", fields: [receiver_id], references: [id])
+  earnedPoint   Int
+  earnedDate    DateTime
+}
+
+model Voucher {
+  id      Int      @id @default(autoincrement())
+  user_Id Int
+  user    User     @relation(fields: [user_Id], references: [id])
+  amount  Int
+  startAt DateTime @default(now())
+  endAt   DateTime 
+}
+
+model Attendee {
+  id             Int         @id @default(autoincrement())
+  transaction_id Int
+  transaction    Transaction @relation(fields: [transaction_id], references: [id])
+  event_code     String
+  name           String
+  user_id        Int
+  user           User        @relation(fields: [user_id], references: [id])
+  tiket_id       Int
+  ticket         Ticket      @relation(fields: [tiket_id], references: [id])
+  price          Int
+  isUsed         Boolean
+}
+
+model Transaction {
+  id          Int        @id @default(autoincrement())
+  dateCreated DateTime   @default(now())
+  discount_id Int
+  promotion   Promotion  @relation(fields: [discount_id], references: [id])
+  quantity    Int
+  total       Int
+  attendee    Attendee[]
+}
+
+model Ticket {
+  id        Int        @id @default(autoincrement())
+  event_id  Int
+  event     Event      @relation(fields: [event_id], references: [id])
+  type      String
+  price     Int
+  available Int
+  Attendee  Attendee[]
+}
+
+model Event {
+  id           Int         @id @default(autoincrement())
+  organizer_id Int
+  user         User        @relation(fields: [organizer_id], references: [id])
+  name         String
+  dateStart    DateTime
+  dateEnd      DateTime
+  time         String
+  location     String
+  desc         String
+  type_id      Int
+  typeevent    TypeEvent   @relation(fields: [type_id], references: [id])
+  category_id  Int
+  category     Category    @relation(fields: [category_id], references: [id])
+  ticket       Ticket[]
+  Promotion    Promotion[]
+  Review       Review[]
+}
+
+
+model Review {
+  id         Int    @id @default(autoincrement())
+  event_id   Int
+  event      Event  @relation(fields: [event_id], references: [id])
+  user_id    Int
+  user       User   @relation(fields: [user_id], references: [id])
+  rating     Int
+  overall    String
+  suggestion String
+}
+
+
+
+
+model TypeEvent {
+  id    Int     @id @default(autoincrement())
+  type  String
+  Event Event[]
+}
+
+model Category {
+  id    Int     @id @default(autoincrement())
+  name  String
+  Event Event[]
+}
+
+model Promotion {
+  id          Int           @id @default(autoincrement())
+  event_id    Int
+  event       Event         @relation(fields: [event_id], references: [id])
+  discount    Int
+  startAt     DateTime
+  endAt       DateTime
+  Transaction Transaction[]
+}

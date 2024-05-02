@@ -1,0 +1,13 @@
+-- CreateTable
+CREATE TABLE `Voucher` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `user_Id` INTEGER NOT NULL,
+    `amount` INTEGER NOT NULL,
+    `startAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `endAt` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `Voucher` ADD CONSTRAINT `Voucher_user_Id_fkey` FOREIGN KEY (`user_Id`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
