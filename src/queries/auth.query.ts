@@ -1,11 +1,47 @@
 import { PrismaClient, User } from "@prisma/client";
 import { IUser } from "../interfaces/auth.interfaces";
-const prisma = new PrismaClient()
+
+const prisma = new PrismaClient();
+
+const generateUniqueCode = async (length: number) => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const codeLength = 8; // Panjang kode yang diinginkan
+
+    let code = '';
+    for (let i = 0; i < codeLength; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        code += characters.charAt(randomIndex);
+    }
+
+    return code;
+};
 
 const createRegisterQuery = async (data: User, pass: string) => {
     try {
+        const uniqueCode = await generateUniqueCode(8);
+
         const t = await prisma.$transaction(async (prisma) => {
             try {
+                let point = 0;
+
+                // Cek apakah pengguna memiliki kode referral
+                if (data.claimedCode) {
+                    // Cari pengguna yang memiliki referralCode yang digunakan
+                    const referringUser = await prisma.user.findUnique({
+                        where: { referralCode: data.claimedCode }
+                    });
+
+                    // Jika pengguna ditemukan, tambahkan 10 poin
+                    if (referringUser) {
+                        // Update poin pengguna pemilik referral code
+                        await prisma.user.update({
+                            where: { id: referringUser.id },
+                            data: { point: referringUser.point + 10000 }
+                        });
+                        // point = 10; // Set point untuk pengguna baru
+                    }
+                }
+
                 const user = await prisma.user.create({
                     data: {
                         username: data.username,
@@ -14,21 +50,22 @@ const createRegisterQuery = async (data: User, pass: string) => {
                         isVerified: data.isVerified,
                         roleId: data.roleId,
                         claimedCode: data.claimedCode,
-                        point: data.point,
-                        referralCode: data.referralCode
-
+                        point: point, // Menggunakan poin yang telah dihitung
+                        referralCode: uniqueCode
                     }
-                }) 
-                return user
+                });
+
+                return user;
             } catch (err) {
-                throw err
+                throw err;
             }
-        })
-        return t
+        });
+
+        return t;
     } catch (err) {
-        throw err
+        throw err;
     }
-}
+};
 
 const loginQuery = async (data: IUser) => {
     try {
@@ -44,17 +81,15 @@ const loginQuery = async (data: IUser) => {
                 },
             },
             where: { email: data.email, password: data.password}
-        })
+        });
 
-        return user
+        return user;
     } catch (err) {
-        throw err
-        
+        throw err;
     }
-}
-
+};
 
 export {
     createRegisterQuery,
     loginQuery
-}
+};

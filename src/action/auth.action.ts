@@ -6,7 +6,7 @@ import { genSalt, hash, compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
 import { API_KEY } from "../config";
 
-const createRegisterAction = async (data: User): Promise<User> => {
+const createRegisterAction = async (data: User) => {
     try {
         const check = await getUserByEmailOrUsernameQuery(data.email, data.username)
         if (check) throw new Error("User Already Exist")
