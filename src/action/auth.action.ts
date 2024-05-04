@@ -34,6 +34,7 @@ const loginAction = async (data: IUser) => {
         if (!isValid) throw new Error ("Password Is Wrong!")
         
             const payload = {
+                userId: user.id,
                 email: user.email,
                 username: user.username,
                 role: user.role.name
