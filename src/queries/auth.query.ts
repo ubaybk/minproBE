@@ -23,6 +23,7 @@ const createRegisterQuery = async (data: User, pass: string) => {
         const t = await prisma.$transaction(async (prisma) => {
             try {
                 let point = 0;
+                let voucherClaim = 0
 
                 // Cek apakah pengguna memiliki kode referral
                 if (data.claimedCode) {
@@ -51,6 +52,7 @@ const createRegisterQuery = async (data: User, pass: string) => {
                         roleId: data.roleId,
                         claimedCode: data.claimedCode,
                         point: point, // Menggunakan poin yang telah dihitung
+                        
                         referralCode: uniqueCode
                     }
                 });
@@ -67,7 +69,7 @@ const createRegisterQuery = async (data: User, pass: string) => {
     }
 };
 
-const loginQuery = async (data: IUser) => {
+const loginQuery = async (data: User ) => {
     try {
         const user = await prisma.user.findUnique({
             select:{
@@ -80,7 +82,7 @@ const loginQuery = async (data: IUser) => {
                     },
                 },
             },
-            where: { email: data.email, password: data.password}
+            where: { email: data.email, password: data.password},
         });
 
         return user;

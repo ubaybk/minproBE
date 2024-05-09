@@ -7,6 +7,11 @@ export interface IEvent {
     time: string
     location: string
     desc: string
-    type_id: number
-    category_id: number
+    categoryName: string
+    discount: number
+    startAtDiscount: Date
+    endAtDiscount: Date
+    price: number
+    quota: number
+    voucherClaim: number
 }

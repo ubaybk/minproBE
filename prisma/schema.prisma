@@ -14,24 +14,23 @@ datasource db {
 }
 
 model User {
-  id            Int               @id @default(autoincrement())
-  username      String            @unique
-  email         String            @unique
-  password      String
-  roleId        Int
-  role          Role              @relation(fields: [roleId], references: [id])
-  point         Int
-  isVerified    Boolean
-  referralCode  String            @unique
-  claimedCode   String               
-  createAt      DateTime          @default(now())
-  updateAt      DateTime          @updatedAt
-  Voucher       Voucher[]
-  giver         ReferralHistory[] @relation("giver")
-  receiver      ReferralHistory[] @relation("receiver")
-  Review        Review[]
-  Event         Event[]
-  Attendee      Attendee[]
+  id           Int               @id @default(autoincrement())
+  username     String            @unique
+  email        String            @unique
+  password     String
+  roleId       Int
+  role         Role              @relation(fields: [roleId], references: [id])
+  point        Int
+  isVerified   Boolean
+  referralCode String            @unique
+  claimedCode  String
+  createAt     DateTime          @default(now())
+  updateAt     DateTime          @updatedAt
+  giver        ReferralHistory[] @relation("giver")
+  receiver     ReferralHistory[] @relation("receiver")
+  Review       Review[]
+  Event        Event[]
+  Transaction  Transaction[]
 }
 
 model Role {
@@ -50,68 +49,61 @@ model ReferralHistory {
   earnedDate    DateTime
 }
 
-model Voucher {
-  id      Int      @id @default(autoincrement())
-  user_Id Int
-  user    User     @relation(fields: [user_Id], references: [id])
-  amount  Int
-  startAt DateTime @default(now())
-  endAt   DateTime 
-}
+// model Voucher {
+//   id      Int      @id @default(autoincrement())
+//   user_Id Int
+//   user    User     @relation(fields: [user_Id], references: [id])
+//   amount  Int
+//   startAt DateTime @default(now())
+//   endAt   DateTime
+// }
 
-model Attendee {
-  id             Int         @id @default(autoincrement())
-  transaction_id Int
-  transaction    Transaction @relation(fields: [transaction_id], references: [id])
-  event_code     String
-  name           String
-  user_id        Int
-  user           User        @relation(fields: [user_id], references: [id])
-  tiket_id       Int
-  ticket         Ticket      @relation(fields: [tiket_id], references: [id])
-  price          Int
-  isUsed         Boolean
-}
+// model Attendee {
+//   id             Int         @id @default(autoincrement())
+//   transaction_id Int
+//   transaction    Transaction @relation(fields: [transaction_id], references: [id])
+//   event_code     String
+//   name           String
+//   user_id        Int
+//   user           User        @relation(fields: [user_id], references: [id])
+//   tiket_id       Int
+//   ticket         Ticket      @relation(fields: [tiket_id], references: [id])
+//   price          Int
+//   isUsed         Boolean
+// }
 
 model Transaction {
-  id          Int        @id @default(autoincrement())
-  dateCreated DateTime   @default(now())
-  discount_id Int
-  promotion   Promotion  @relation(fields: [discount_id], references: [id])
-  quantity    Int
-  total       Int
-  attendee    Attendee[]
+  id              Int      @id @default(autoincrement())
+  id_user         Int
+  user            User     @relation(fields: [id_user], references: [id])
+  id_event        Int
+  event           Event    @relation(fields: [id_event], references: [id])
+  transactionDate DateTime @default(now())
+  status          String
+  total           Int
 }
 
-model Ticket {
-  id        Int        @id @default(autoincrement())
-  event_id  Int
-  event     Event      @relation(fields: [event_id], references: [id])
-  type      String
-  price     Int
-  available Int
-  Attendee  Attendee[]
-}
 
 model Event {
-  id           Int         @id @default(autoincrement())
+  id           Int           @id @default(autoincrement())
   organizer_id Int
-  user         User        @relation(fields: [organizer_id], references: [id])
+  user         User          @relation(fields: [organizer_id], references: [id])
   name         String
   dateStart    DateTime
   dateEnd      DateTime
   time         String
   location     String
   desc         String
-  type_id      Int
-  typeevent    TypeEvent   @relation(fields: [type_id], references: [id])
-  category_id  Int
-  category     Category    @relation(fields: [category_id], references: [id])
-  ticket       Ticket[]
-  Promotion    Promotion[]
+  categoryName  String
+  discount     Int
+  startAtDiscount DateTime
+  endAtDiscount   DateTime
+  price       Int
+  quota       Int
+  voucherClaim  Int
   Review       Review[]
+  Transaction  Transaction[]
 }
-
 
 model Review {
   id         Int    @id @default(autoincrement())
@@ -120,31 +112,8 @@ model Review {
   user_id    Int
   user       User   @relation(fields: [user_id], references: [id])
   rating     Int
-  overall    String
   suggestion String
 }
 
 
 
-
-model TypeEvent {
-  id    Int     @id @default(autoincrement())
-  type  String
-  Event Event[]
-}
-
-model Category {
-  id    Int     @id @default(autoincrement())
-  name  String
-  Event Event[]
-}
-
-model Promotion {
-  id          Int           @id @default(autoincrement())
-  event_id    Int
-  event       Event         @relation(fields: [event_id], references: [id])
-  discount    Int
-  startAt     DateTime
-  endAt       DateTime
-  Transaction Transaction[]
-}

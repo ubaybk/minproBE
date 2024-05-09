@@ -31,22 +31,22 @@ const loginAction = async (data: IUser) => {
 
         const isValid = await compare(data.password, user.password)
 
-        if (!isValid) throw new Error ("Password Is Wrong!")
-        
-            const payload = {
-                userId: user.id,
-                email: user.email,
-                username: user.username,
-                role: user.role.name
-            } //isi JWT
-            const token = sign(payload, String(API_KEY), { expiresIn: "1H"} )
+        if (!isValid) throw new Error("Password Is Wrong!")
+
+        const payload = {
+            userId: user.id,
+            email: user.email,
+            username: user.username,
+            role: user.role.name
+        } //isi JWT
+        const token = sign(payload, String(API_KEY), { expiresIn: "1h" })
 
 
         // const user = await loginQuery(data)
 
         // if(!user) throw new Error("Password or Email Incorrect")
 
-        return {user,token}
+        return { user, token }
     } catch (err) {
         throw err
     }
@@ -54,6 +54,7 @@ const loginAction = async (data: IUser) => {
 
 export {
     createRegisterAction,
-    loginAction
+    loginAction, 
+
 }
 
