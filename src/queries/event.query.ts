@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { IEvent } from "../interfaces/event.interfaces";
+import { isNumberObject } from "util/types";
 
 const prisma = new PrismaClient
 
@@ -31,10 +32,19 @@ const createEventQuery = async (data: IEvent) => {
     }
 }
 
-const getEventQuery = async (filters: {name?: string, location?: string, categoryName?:string}): Promise<IEvent[]> => {
+const getEventQuery = async (filters: {
+    name?: string 
+    location?: string
+    categoryName?:string 
+    page?: number
+    pageSize?: number
+}): Promise<IEvent[]> => {
     try {
-        const {name, location, categoryName} = filters
+        const {name, location, categoryName, page, pageSize} = filters
+        const skipPage = Number(page) > 1? (Number(page) - 1) * Number(pageSize) : 0
         const event = await prisma.event.findMany({
+            skip: skipPage,
+            take: Number(pageSize),
             where: {
                 name: {contains:name},
                 location: {contains: location},
