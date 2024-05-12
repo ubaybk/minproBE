@@ -4,9 +4,9 @@ import { IEvent } from "../interfaces/event.interfaces";
 import { createEventQuery, getEventQuery, getIdEventQuery, updateEventQuery, deleteEventQuery} from "../queries/event.query";
 
 
-const createEventAction = async (data: IEvent): Promise<Event> => {
+const createEventAction = async (data: IEvent, token: any)=> {
     try {
-        const event = await createEventQuery(data)
+        const event = await createEventQuery(data, token)
 
         return event
     } catch (err) {

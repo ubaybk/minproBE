@@ -6,6 +6,7 @@ CREATE TABLE `User` (
     `password` VARCHAR(191) NOT NULL,
     `roleId` INTEGER NOT NULL,
     `point` INTEGER NOT NULL,
+    `voucherClaim` INTEGER NOT NULL,
     `isVerified` BOOLEAN NOT NULL,
     `referralCode` VARCHAR(191) NOT NULL,
     `claimedCode` VARCHAR(191) NOT NULL,

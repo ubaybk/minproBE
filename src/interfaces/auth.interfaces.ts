@@ -9,6 +9,7 @@ export interface IUser {
     roleId: number,
     claimedCode: string,
     point: number,
+    voucherClaim: number,
     referralCode: string
 
 

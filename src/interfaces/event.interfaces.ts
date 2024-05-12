@@ -13,5 +13,4 @@ export interface IEvent {
     endAtDiscount: Date
     price: number
     quota: number
-    voucherClaim: number
 }

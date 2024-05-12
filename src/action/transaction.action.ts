@@ -13,9 +13,9 @@ const createTransactionAction = async (data: ITransaction): Promise<Transaction>
     }
 }
 
-const getTransactionAction = async ():Promise<ITransaction[]> => {
+const getTransactionAction = async (token:any):Promise<ITransaction[]> => {
     try {
-       const transaction = await getTransactionQuery()
+       const transaction = await getTransactionQuery(token)
 
        return transaction  
     } catch (err) {

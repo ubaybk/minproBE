@@ -21,8 +21,8 @@ const createTransactionController = async (req: Request, res: Response, next: Ne
 const getTransactionController = async (req:Request, res:Response, next:NextFunction):Promise<void> => {
     try {
         
-
-        const data = await getTransactionAction()
+        const token = req.user;
+        const data = await getTransactionAction(token)
 
         res.status(200).json({
             message: "Get Transaction Success", data})

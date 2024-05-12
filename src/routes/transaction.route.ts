@@ -7,8 +7,8 @@ import { adminGuard, verifyToken } from '../middlewares/auth.middleware';
 const router = express.Router()
 
 router.post("/",verifyToken,createTransactionController);
-router.get("/", getTransactionController)
-router.get("/:id", getIdTransactionController)
+router.get("/",verifyToken, getTransactionController)
+router.get("/:id",verifyToken, getIdTransactionController)
 
 
 

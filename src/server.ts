@@ -6,10 +6,13 @@ import eventRouter from "./routes/event.route"
 import transactionRouter from "./routes/transaction.route"
 import { ErrorMiddleware } from './middlewares/error.middleware'
 
+const cors = require('cors')
+
 const PORT: number = Number(API_PORT) || 8000
 
 const app: Application = express()
 
+app.use(cors())
 app.use(express.json())
 
 app.use("/auth", registerRouter)

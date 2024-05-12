@@ -29,6 +29,7 @@ const loginController = async(req: Request, res: Response, next: NextFunction):P
             token: data.token
         }
         console.log ("ini data",newData)
+        console.log(data)
        
         
         res.status(200).json({

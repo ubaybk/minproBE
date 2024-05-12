@@ -4,25 +4,31 @@ import { isNumberObject } from "util/types";
 
 const prisma = new PrismaClient
 
-const createEventQuery = async (data: IEvent) => {
+const createEventQuery = async (data: IEvent, token: any ) => {
     try {
-        const { organizer_id, name, dateStart, dateEnd, time, location, desc, categoryName, discount, startAtDiscount, endAtDiscount, price, quota, voucherClaim } = data
+
+        const userId = token.userId;
+
+        const {  name, dateStart, dateEnd, time, location, desc, categoryName, discount, startAtDiscount, endAtDiscount, price, quota } = data
+       
+        
+       
         const event = await prisma.event.create({
             data: {
-                organizer_id: Number(organizer_id),
+                organizer_id: userId,
                 name,
-                dateStart,
-                dateEnd,
+                dateStart: new Date(dateStart),
+                dateEnd: new Date(dateEnd),
                 time,
                 location,
                 desc,
                 categoryName,
-                discount,
-                startAtDiscount,
-                endAtDiscount,
+                discount ,
+                startAtDiscount: new Date(startAtDiscount),
+                endAtDiscount:  new Date(endAtDiscount),
                 price,
                 quota,
-                voucherClaim
+                
             }
         })
 
@@ -36,15 +42,15 @@ const getEventQuery = async (filters: {
     name?: string 
     location?: string
     categoryName?:string 
-    page?: number
-    pageSize?: number
+    // page?: number
+    // pageSize?: number
 }): Promise<IEvent[]> => {
     try {
-        const {name, location, categoryName, page, pageSize} = filters
-        const skipPage = Number(page) > 1? (Number(page) - 1) * Number(pageSize) : 0
+        const {name, location, categoryName} = filters
+        // const skipPage = Number(page) > 1? (Number(page) - 1) * Number(pageSize) : 0
         const event = await prisma.event.findMany({
-            skip: skipPage,
-            take: Number(pageSize),
+            // skip: skipPage,
+            // take: Number(pageSize),
             where: {
                 name: {contains:name},
                 location: {contains: location},

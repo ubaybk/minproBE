@@ -1,6 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { Transaction } from "@prisma/client";
 import { ITransaction } from "../interfaces/transaction.interfaces";
+import { tokenId, verifyToken } from "../middlewares/auth.middleware";
+import jwt from 'jsonwebtoken';
 const prisma = new PrismaClient
 
 const createTransactionQuery = async (data: ITransaction) => {
@@ -22,10 +24,16 @@ const createTransactionQuery = async (data: ITransaction) => {
     }
 }
 
-const getTransactionQuery = async ():Promise<ITransaction[]> => {
+const getTransactionQuery = async (token:any):Promise<ITransaction[]> => {
     try {
-        
-        const transaction = await prisma.transaction.findMany()
+        const userId = token.userId;
+
+
+        const transaction = await prisma.transaction.findMany({
+            where: {
+                id_user : userId
+            }
+        })
 
         return transaction
     } catch (err) {

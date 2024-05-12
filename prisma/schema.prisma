@@ -21,6 +21,7 @@ model User {
   roleId       Int
   role         Role              @relation(fields: [roleId], references: [id])
   point        Int
+  voucherClaim  Decimal
   isVerified   Boolean
   referralCode String            @unique
   claimedCode  String
@@ -100,7 +101,6 @@ model Event {
   endAtDiscount   DateTime
   price       Int
   quota       Int
-  voucherClaim  Int
   Review       Review[]
   Transaction  Transaction[]
 }

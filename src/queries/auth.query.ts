@@ -39,9 +39,11 @@ const createRegisterQuery = async (data: User, pass: string) => {
                             where: { id: referringUser.id },
                             data: { point: referringUser.point + 10000 }
                         });
-                        // point = 10; // Set point untuk pengguna baru
+                        voucherClaim = 0.1; // Set point untuk pengguna baru
                     }
                 }
+
+                console.log("Nilai voucherClaim sebelum pembuatan pengguna:", voucherClaim); // Tambahkan ini
 
                 const user = await prisma.user.create({
                     data: {
@@ -52,7 +54,7 @@ const createRegisterQuery = async (data: User, pass: string) => {
                         roleId: data.roleId,
                         claimedCode: data.claimedCode,
                         point: point, // Menggunakan poin yang telah dihitung
-                        
+                        voucherClaim: voucherClaim,
                         referralCode: uniqueCode
                     }
                 });
