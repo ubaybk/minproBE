@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { createRegisterAction, loginAction } from "../action/auth.action";
+import { createRegisterAction, getRegisterAction, loginAction } from "../action/auth.action";
 import { get } from "http";
-import { getEventAction } from "../action/event.action";
+
 
 const createRegisterController= async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -12,6 +12,18 @@ const createRegisterController= async (req: Request, res: Response, next: NextFu
         })
     } catch (err) {
         next (err)
+    }
+}
+
+const getRegisterController = async (req:Request, res:Response, next:NextFunction):Promise<void> => {
+    try {
+        const token = req.user;
+        const data = await getRegisterAction(token)
+
+        res.status(200).json({
+            message: "Get Register Success", data})
+    } catch (err) {
+        throw err
     }
 }
 
@@ -42,5 +54,5 @@ const loginController = async(req: Request, res: Response, next: NextFunction):P
 
 
 
-export {createRegisterController, loginController}
+export {createRegisterController, loginController, getRegisterController}
 

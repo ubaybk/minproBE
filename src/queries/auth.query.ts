@@ -71,6 +71,22 @@ const createRegisterQuery = async (data: User, pass: string) => {
     }
 };
 
+
+const getRegisterQuery = async (token:any) => {
+    try {
+        const userId = token.userId
+
+        const register = await prisma.user.findMany({
+            where: {
+                id : userId
+            }
+        })
+        return register
+    } catch (err) {
+        throw err
+    }
+}
+
 const loginQuery = async (data: User ) => {
     try {
         const user = await prisma.user.findUnique({
@@ -95,5 +111,6 @@ const loginQuery = async (data: User ) => {
 
 export {
     createRegisterQuery,
-    loginQuery
+    loginQuery,
+    getRegisterQuery
 };

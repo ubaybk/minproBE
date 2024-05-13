@@ -1,7 +1,7 @@
 import { User } from "@prisma/client";
 import { IUser } from "../interfaces/auth.interfaces";
 import { getUserByEmailByQuery, getUserByEmailOrUsernameQuery } from "../queries/user.query";
-import { createRegisterQuery, loginQuery } from "../queries/auth.query";
+import { createRegisterQuery, getRegisterQuery, loginQuery } from "../queries/auth.query";
 import { genSalt, hash, compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
 import { API_KEY } from "../config";
@@ -17,6 +17,15 @@ const createRegisterAction = async (data: User) => {
         const register = await createRegisterQuery(data, hashPass)
 
         return register
+    } catch (err) {
+        throw err
+    }
+}
+
+const getRegisterAction = async (token:any) => {
+    try {
+       const register = await getRegisterQuery(token) 
+       return register
     } catch (err) {
         throw err
     }
@@ -55,6 +64,7 @@ const loginAction = async (data: IUser) => {
 export {
     createRegisterAction,
     loginAction, 
+    getRegisterAction
 
 }
 
