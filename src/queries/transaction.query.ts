@@ -30,11 +30,18 @@ const getTransactionQuery = async (token:any):Promise<ITransaction[]> => {
 
 
         const transaction = await prisma.transaction.findMany({
+            include: {
+                event: true,
+                user: true
+            }, 
+            orderBy: {
+                transactionDate: 'desc' 
+            },
             where: {
                 id_user : userId
             }
         })
-
+console.log(transaction)
         return transaction
     } catch (err) {
         throw err

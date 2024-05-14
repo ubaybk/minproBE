@@ -49,6 +49,9 @@ const getEventQuery = async (filters: {
         const {name, location, categoryName} = filters
         // const skipPage = Number(page) > 1? (Number(page) - 1) * Number(pageSize) : 0
         const event = await prisma.event.findMany({
+//             include: {
+// name: true
+//             },
             // skip: skipPage,
             // take: Number(pageSize),
             where: {
